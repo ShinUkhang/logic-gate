@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>[고1 아카데미아] 집합과 명제로 배우는 컴퓨터 논리와 AI 퍼셉트론</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    /* ==========================================================================
+       기본 웹 및 인쇄 스타일 설정 (A4 최적화 규격)
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      font-family: "Pretendard", "맑은 고딕", "Malgun Gothic", sans-serif;
+      color: #1e293b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* 화면 상단 고정 인쇄 툴바 */
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .no-print-bar h2 {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+    }
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .sim-btn {
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .sim-btn:hover {
+      background: #0284c7;
+    }
+    .print-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .print-btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* A4 페이지 래퍼 */
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      gap: 25px;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: 13mm 14mm 10mm 14mm;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 헤더 디자인 */
+    .page-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 5px;
+      margin-bottom: 8px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: bold;
+    }
+    .page-num {
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #64748b;
+    }
+    .main-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 5px 0;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .info-table th, .info-table td {
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      text-align: center;
+    }
+    .info-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      width: 14%;
+    }
+
+    /* 섹션 타이틀 */
+    .section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin: 8px 0 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tip-box {
+      background: #f0fdf4;
+      border-left: 3.5px solid #16a34a;
+      padding: 5px 8px;
+      font-size: 11px;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 6px;
+      color: #14532d;
+    }
+
+    /* 테이블 스타일 */
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 4px 0;
+    }
+    .content-table th, .content-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 5px;
+      text-align: center;
+    }
+    .content-table th {
+      background: #f1f5f9;
+      font-weight: bold;
+      color: #334155;
+    }
+
+    /* 빈칸 라인 */
+    .blank {
+      display: inline-block;
+      min-width: 50px;
+      border-bottom: 1.2px solid #64748b;
+      margin: 0 2px;
+      height: 13px;
+    }
+    .blank-lg {
+      display: inline-block;
+      min-width: 110px;
+      border-bottom: 1.2px solid #64748b;
+      margin: 0 2px;
+      height: 13px;
+    }
+    .write-box {
+      border: 1px dashed #94a3b8;
+      border-radius: 4px;
+      padding: 6px 8px;
+      background: #fafafa;
+      min-height: 40px;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* 푸터 */
+    .page-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    
+    
+    /* ==========================================================================
+       정밀 회로 NAND 및 0~32 연산기 모달 스타일
+       ========================================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 920px;
+      color: #f8fafc;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      padding: 18px 22px;
+      position: relative;
+      max-height: 96vh;
+      overflow-y: auto;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close-btn:hover {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+    /* 탭 헤더 */
+    .tab-header {
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .main-tab-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .main-tab-btn.active {
+      background: #0284c7;
+      color: white;
+      border-color: #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+    .sim-mode-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .sim-mode-btn.active {
+      background: #0284c7;
+      color: white;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+    }
+    .sim-input-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      font-family: monospace;
+      cursor: pointer;
+      border: 2px solid #475569;
+      background: #1e293b;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .sim-input-btn.on {
+      background: #10b981;
+      color: white;
+      border-color: #34d399;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    }
+    /* 0~32 비트 스위치 버튼 */
+    .bit-btn {
+      width: 46px;
+      height: 52px;
+      border-radius: 8px;
+      background: #1e293b;
+      border: 2px solid #334155;
+      color: #64748b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: monospace;
+      transition: all 0.2s;
+    }
+    .bit-btn.on {
+      background: #0369a1;
+      border-color: #38bdf8;
+      color: white;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+    }
+    .bit-btn .val {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .bit-btn .label {
+      font-size: 9.5px;
+      margin-top: 2px;
+    }
+    .calc-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-size: 11.5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .calc-btn:hover {
+      background: #334155;
+      color: white;
+    }
+    @media print {
+      .modal-overlay {
+        display: none !important;
+      }
+    }
+
+       ========================================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 820px;
+      color: #f8fafc;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      position: relative;
+      max-height: 94vh;
+      overflow-y: auto;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: #334155;
+      color: #cbd5e1;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close-btn:hover {
+      background: #ef4444;
+      color: white;
+    }
+    .sim-mode-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .sim-mode-btn.active {
+      background: #0284c7;
+      color: white;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    .sim-input-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: monospace;
+      cursor: pointer;
+      border: 2px solid #475569;
+      background: #1e293b;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .sim-input-btn.on {
+      background: #10b981;
+      color: white;
+      border-color: #34d399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+    }
+    .wire-active {
+      background-color: #38bdf8 !important;
+      box-shadow: 0 0 10px #38bdf8, 0 0 3px #0284c7;
+    }
+    .wire-inactive {
+      background-color: #334155 !important;
+      box-shadow: none;
+    }
+    .gate-box {
+      background: #1e293b;
+      border: 1.5px solid #475569;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-align: center;
+      min-width: 90px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .gate-active {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+    @media print {
+      .modal-overlay {
+        display: none !important;
+      }
+    }
+
+    /* 인쇄 시 스타일 */
+    @media print {
+      body {
+        background: transparent;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .page-container {
+        padding: 0;
+        gap: 0;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        height: 297mm;
+        width: 210mm;
+      }
+      .page:last-child {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 인쇄 툴바 -->
+  <div class="no-print-bar">
+    <h2>📚 [고1 아카데미아] 집합과 명제 & AI 퍼셉트론 4차시 워크북 (총 4페이지 완결)</h2>
+    <div class="toolbar-actions">
+      <button class="sim-btn" onclick="openNandModal()">
+        ⚡ NAND 실습 시뮬레이터 열기
+      </button>
+      <button class="print-btn" onclick="window.print()">
+        🖨️ 인쇄하기 / PDF로 저장
+      </button>
+    </div>
+  </div>
+
+  <div class="page-container">
+
+    <!-- ======================================================================
+         PAGE 1: 집합의 연산과 진리집합, 드모르간 법칙 (손계산)
+         ====================================================================== -->
+    <div class="page" id="page1">
+      <div>
+        <div class="page-header">
+          <div class="header-top">
+            <span class="badge">1차시 실습 활동지</span>
+            <span class="page-num">Page 1 / 4</span>
+          </div>
+          <h1 class="main-title">집합의 연산과 진리집합, 그리고 드모르간 법칙</h1>
+          <table class="info-table">
+            <tr>
+              <th>학년 / 반</th>
+              <td>1학년 &nbsp;&nbsp;&nbsp;반 &nbsp;&nbsp;&nbsp;번</td>
+              <th>성명</th>
+              <td></td>
+              <th>실시일</th>
+              <td>2026년 &nbsp;&nbsp;월 &nbsp;&nbsp;일</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tip-box">
+          <strong>💡 1분 핵심 개념</strong> : 
+          조건 $p(x)$를 참이 되게 하는 원소의 모임을 <strong>진리집합 $P$</strong>라 합니다. 
+          교집합($\cap$, AND), 합집합($\cup$, OR), 여집합($P^c$, NOT), 차집합($P-Q$)은 컴퓨터 프로그래밍 불리언 논리의 뼈대가 됩니다.
+        </div>
+
+        <!-- 활동 1 -->
+        <div class="section-title">✍️ [활동 1] 진리집합 구하기 & 벤다이어그램 직접 채우기</div>
+        <p style="margin: 2px 0 5px 0; font-size: 11.5px;">
+          전체집합 $U = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}$에서 두 조건 $p$: "12의 약수", $q$: "짝수"일 때:
+        </p>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:5px 8px; margin-bottom:6px; font-size:11.5px;">
+          • 조건 $p$의 진리집합 $P = \{ $ <span class="blank-lg"></span> $ \}$ &nbsp;&nbsp;|&nbsp;&nbsp;
+          • 조건 $q$의 진리집합 $Q = \{ $ <span class="blank-lg"></span> $ \}$
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 6px;">
+          <!-- 벤다이어그램 SVG -->
+          <svg width="220" height="105" viewBox="0 0 220 105" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px;">
+            <rect x="5" y="5" width="210" height="95" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+            <text x="15" y="18" font-size="9.5" font-weight="bold" fill="#334155">전체집합 U</text>
+            <circle cx="80" cy="55" r="38" fill="#3b82f6" fill-opacity="0.12" stroke="#2563eb" stroke-width="1.5"/>
+            <text x="55" y="30" font-size="10.5" font-weight="bold" fill="#1d4ed8">P</text>
+            <circle cx="140" cy="55" r="38" fill="#ef4444" fill-opacity="0.12" stroke="#dc2626" stroke-width="1.5"/>
+            <text x="160" y="30" font-size="10.5" font-weight="bold" fill="#b91c1c">Q</text>
+            <text x="60" y="58" font-size="9.5" font-weight="bold" fill="#1e293b">[ ㉠ ]</text>
+            <text x="105" y="58" font-size="9.5" font-weight="bold" fill="#1e293b">[ ㉡ ]</text>
+            <text x="145" y="58" font-size="9.5" font-weight="bold" fill="#1e293b">[ ㉢ ]</text>
+            <text x="15" y="90" font-size="9.5" font-weight="bold" fill="#64748b">바깥 [ ㉣ ]</text>
+          </svg>
+
+          <div style="flex: 1; font-size: 11px;">
+            <div style="margin-bottom: 3px;">• <strong>㉠ 순수한 P ($P - Q$)</strong> : { <span class="blank"></span> }</div>
+            <div style="margin-bottom: 3px;">• <strong>㉡ 겹치는 부분 ($P \cap Q$)</strong> : { <span class="blank"></span> }</div>
+            <div style="margin-bottom: 3px;">• <strong>㉢ 순수한 Q ($Q - P$)</strong> : { <span class="blank"></span> }</div>
+            <div>• <strong>㉣ 바깥쪽 ($(P \cup Q)^c$)</strong> : { <span class="blank"></span> }</div>
+          </div>
+        </div>
+
+        <!-- 활동 2 -->
+        <div class="section-title">✍️ [활동 2] 집합 연산 기호와 파이썬 기호 매칭</div>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>연산 이름</th>
+              <th>수학 기호</th>
+              <th>파이썬 기호</th>
+              <th>내가 직접 구한 원소 결과</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>교집합 (AND)</strong></td>
+              <td>$P \cap Q$</td>
+              <td><code>P & Q</code></td>
+              <td>{ <span class="blank-lg"></span> }</td>
+            </tr>
+            <tr>
+              <td><strong>합집합 (OR)</strong></td>
+              <td>$P \cup Q$</td>
+              <td><code>P | Q</code></td>
+              <td>{ <span class="blank-lg"></span> }</td>
+            </tr>
+            <tr>
+              <td><strong>P의 여집합 (NOT)</strong></td>
+              <td>$P^c$</td>
+              <td><code>U - P</code></td>
+              <td>{ <span class="blank-lg"></span> }</td>
+            </tr>
+            <tr>
+              <td><strong>차집합</strong></td>
+              <td>$P - Q$</td>
+              <td><code>P - Q</code></td>
+              <td>{ <span class="blank-lg"></span> }</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 활동 3 -->
+        <div class="section-title">✍️ [활동 3] 드모르간 법칙 좌변과 우변 손계산 검증</div>
+        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:7px 10px; font-size:11px;">
+          <div style="font-weight: bold; margin-bottom: 4px; color:#0f172a;">
+            📌 공식: $(P \cup Q)^c = P^c \cap Q^c$ ("합집합의 여집합은 여집합의 교집합과 같다")
+          </div>
+          <div style="margin-bottom: 3px;">
+            1) <strong>[좌변]</strong> 먼저 $P \cup Q$ = { <span class="blank-lg"></span> } 이므로, <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;좌변 $(P \cup Q)^c = U - (P \cup Q) = $ <strong>{ <span class="blank-lg"></span> }</strong> &nbsp;&nbsp;··· ①
+          </div>
+          <div style="margin-bottom: 4px;">
+            2) <strong>[우변]</strong> $P^c = $ { <span class="blank"></span> }, &nbsp; $Q^c = $ { <span class="blank"></span> } 이므로, <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;우변 $P^c \cap Q^c = $ <strong>{ <span class="blank-lg"></span> }</strong> &nbsp;&nbsp;··· ②
+          </div>
+          <div style="background:#f1f5f9; padding:4px 8px; border-radius:4px;">
+            👉 <strong>비교 결론</strong> : ①번과 ②번의 원소가 완전히 같습니까? ( <strong>예 / 아니오</strong> ) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;따라서 드모르간 법칙은 <strong>( 참 / 거짓 )</strong> 임이 손계산으로 증명되었습니다!
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>고등학교 1학년 아카데미아 수학-정보 융합 탐구</span>
+        <span>Page 1 (1차시)</span>
+      </div>
+    </div>
+
+
+    <!-- ======================================================================
+         PAGE 2: 명제와 조건 & [신규] NAND 만능 게이트 및 0~32 출력 회로
+         ====================================================================== -->
+    <div class="page" id="page2">
+      <div>
+        <div class="page-header">
+          <div class="header-top">
+            <span class="badge" style="background:#fef3c7; color:#b45309;">2차시 실습 활동지</span>
+            <span class="page-num">Page 2 / 4</span>
+          </div>
+          <h1 class="main-title">명제의 포함관계, NAND 만능 게이트 & 0~32 카운터 회로</h1>
+          <table class="info-table">
+            <tr>
+              <th>학년 / 반</th>
+              <td>1학년 &nbsp;&nbsp;&nbsp;반 &nbsp;&nbsp;&nbsp;번</td>
+              <th>성명</th>
+              <td></td>
+              <th>확인</th>
+              <td>(인)</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tip-box" style="background:#eff6ff; border-left-color:#2563eb; color:#1e3a8a;">
+          <strong>💡 1분 핵심 개념</strong> : 
+          $P \subseteq Q$ 일 때 명제 $p \to q$는 참이며 $p$는 충분조건, $q$는 필요조건입니다. 
+          반도체 공학에서는 <strong>드모르간 법칙</strong> 덕분에 <strong>NAND 게이트 하나만으로 모든 논리 연산을 처리</strong>하며, 
+          이를 결합하여 <strong>0부터 32($2^5$)까지 숫자를 카운트하는 가산기 회로</strong>를 만듭니다!
+        </div>
+
+        <!-- 활동 1 -->
+        <div class="section-title">✍️ [활동 1] 진리집합 포함관계와 필요·충분조건 판정</div>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th width="32%">조건 $p$ vs 조건 $q$</th>
+              <th width="28%">진리집합 포함관계</th>
+              <th width="20%">성립하는 화살표</th>
+              <th width="20%">$p$는 $q$이기 위한?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$p$: $x$는 4의 배수<br>$q$: $x$는 2의 배수</td>
+              <td>$P = \{4, 8, 12, \dots\}$<br>$Q = \{2, 4, 6, 8, \dots\}$</td>
+              <td>$P \subseteq Q$ 이므로<br><strong>$p \implies q$</strong> (참)</td>
+              <td>( <strong>충분 / 필요</strong> ) 조건</td>
+            </tr>
+            <tr>
+              <td>$p$: $x$는 2의 배수<br>$q$: $x$는 4의 배수</td>
+              <td>반례: $x = $ [ <span class="blank"></span> ]<br>$Q \subset P$ ($P \not\subseteq Q$)</td>
+              <td>$q \implies p$ 성립<br><strong>$p \not\implies q$</strong> (거짓)</td>
+              <td>( <strong>충분 / 필요</strong> ) 조건</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 활동 2 (NAND 만능성) -->
+        <div class="section-title" style="justify-content: space-between;">
+          <span>⚡ [활동 2] 반도체의 기적: NAND 게이트 하나로 모든 연산 처리하기</span>
+          <button class="sim-btn" onclick="openNandModal()" style="font-size: 10px; padding: 2px 8px; height: 22px;">
+            🎮 화면에서 시뮬레이터 직접 조작하기 (클릭)
+          </button>
+        </div>
+        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:7px 10px; font-size:11px; margin-bottom:6px;">
+          드모르간 법칙에 의해 <strong>NAND (둘 다 1일 때만 0)</strong>만 조합하면 모든 기본 게이트가 합성됩니다.
+          <table class="content-table" style="margin:4px 0;">
+            <thead>
+              <tr>
+                <th width="22%">만들고 싶은 연산</th>
+                <th width="48%">NAND 게이트 연결 방법 (수학식)</th>
+                <th width="30%">동작 확인</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>NOT(A)</strong></td>
+                <td>$\text{NAND}(A, A) = \overline{A \cdot A} = \bar{A}$</td>
+                <td>0 넣으면 1, 1 넣으면 0 (성공)</td>
+              </tr>
+              <tr>
+                <td><strong>AND(A, B)</strong></td>
+                <td>$\text{NOT}(\text{NAND}(A, B)) \implies$ NAND 출력을 다시 묶음</td>
+                <td>둘 다 1일 때만 1 출력 (성공)</td>
+              </tr>
+              <tr>
+                <td><strong>OR(A, B)</strong></td>
+                <td>드모르간: $\text{NAND}(\bar{A}, \bar{B}) = \overline{\bar{A} \cdot \bar{B}} = A + B$</td>
+                <td>하나라도 1이면 1 출력 (성공)</td>
+              </tr>
+            </tbody>
+          </table>
+          👉 <strong>삼성전자/SK하이닉스가 NAND를 대량 생산하는 이유</strong>: 
+          NAND 하나만 반복 배치하면 CPU, GPU, 메모리 등 모든 복잡한 논리 회로를 100% 다 제작할 수 있기 때문입니다!
+        </div>
+
+        <!-- 활동 3 (0~32 출력 카운터) -->
+        <div class="section-title">🔢 [활동 3] 논리 게이트 회로로 0부터 32까지 숫자 세기 (2진수 가산기)</div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:7px 10px; font-size:11px;">
+          컴퓨터는 <strong>XOR(합 Sum)</strong>과 <strong>AND(올림수 Carry)</strong> 게이트를 연결한 <strong>반가산기(Half Adder)</strong>로 2진수 덧셈을 합니다.
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <table class="content-table" style="width:48%; margin:0;">
+              <thead>
+                <tr>
+                  <th>10진수 숫자</th>
+                  <th>5비트 2진수 ($2^4, 2^3, 2^2, 2^1, 2^0$)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>0</strong></td><td><code>0 0 0 0 0</code> (스위치 모두 OFF)</td></tr>
+                <tr><td><strong>1</strong></td><td><code>0 0 0 0 1</code> ($2^0$)</td></tr>
+                <tr><td><strong>2</strong></td><td><code>0 0 0 1 0</code> ($2^1$)</td></tr>
+                <tr><td><strong>3</strong></td><td><code>0 0 0 1 1</code> ($2^1 + 2^0$)</td></tr>
+                <tr><td><strong>···</strong></td><td>······ (가산기 회로로 1씩 증가)</td></tr>
+              </tbody>
+            </table>
+            <table class="content-table" style="width:48%; margin:0;">
+              <thead>
+                <tr>
+                  <th>10진수 숫자</th>
+                  <th>5~6비트 2진수 출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>16</strong></td><td><code>1 0 0 0 0</code> ($2^4$)</td></tr>
+                <tr><td><strong>31</strong></td><td><code>1 1 1 1 1</code> ($16+8+4+2+1$)</td></tr>
+                <tr><td><strong>★ 32 ★</strong></td><td><code>1 0 0 0 0 0</code> (6번째 비트 올림!)</td></tr>
+                <tr>
+                  <td colspan="2" style="background:#fef3c7; color:#92400e; font-weight:bold;">
+                    스위치 5~6개로 0부터 32까지 표현 완성!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>고등학교 1학년 아카데미아 수학-정보 융합 탐구</span>
+        <span>Page 2 (2차시)</span>
+      </div>
+    </div>
+
+
+    <!-- ======================================================================
+         PAGE 3: 퍼셉트론 부등식 & [신규] XOR을 OR과 NAND로 최종 도출
+         ====================================================================== -->
+    <div class="page" id="page3">
+      <div>
+        <div class="page-header">
+          <div class="header-top">
+            <span class="badge" style="background:#fee2e2; color:#b91c1c;">3차시 실습 활동지</span>
+            <span class="page-num">Page 3 / 4</span>
+          </div>
+          <h1 class="main-title">퍼셉트론 1차 부등식 손계산 & XOR의 최종 수학적 도출</h1>
+          <table class="info-table">
+            <tr>
+              <th>학년 / 반</th>
+              <td>1학년 &nbsp;&nbsp;&nbsp;반 &nbsp;&nbsp;&nbsp;번</td>
+              <th>성명</th>
+              <td></td>
+              <th>확인</th>
+              <td>(인)</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tip-box" style="background:#fdf2f8; border-left-color:#db2777; color:#9d174d;">
+          <strong>💡 1분 핵심 개념</strong> : 
+          단층 퍼셉트론 $z = w_1 x_1 + w_2 x_2 + b$ 는 직선 1개이므로 XOR을 분리할 수 없습니다. 
+          하지만 <strong>명제 논리의 결합: $\text{XOR} = \text{OR} \land \text{NAND}$</strong> 을 이용하면 
+          <strong>직선 2개(다층 퍼셉트론)</strong>로 완벽히 해결할 수 있습니다!
+        </div>
+
+        <!-- 활동 1 -->
+        <div class="section-title">✍️ [활동 1] AND 게이트: 점 4개를 퍼셉트론 식($2x_1 + 2x_2 - 3$)에 대입 계산</div>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th width="16%">점 $(x_1, x_2)$</th>
+              <th width="32%">대입 계산 식</th>
+              <th width="14%">$z$ 계산값</th>
+              <th width="14%">$z \ge 0$ 인가?</th>
+              <th width="12%">출력 $y$</th>
+              <th width="12%">정답(AND)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>$(0, 0)$</strong></td>
+              <td>$2(0) + 2(0) - 3$</td>
+              <td><strong>-3</strong></td>
+              <td>거짓 ($< 0$)</td>
+              <td><strong>0 (파랑)</strong></td>
+              <td>0 (일치)</td>
+            </tr>
+            <tr>
+              <td><strong>$(1, 0)$</strong></td>
+              <td>$2(1) + 2(0) - 3$</td>
+              <td><span class="blank"></span></td>
+              <td>( 참 / 거짓 )</td>
+              <td><strong><span class="blank"></span></strong></td>
+              <td>0 (일치)</td>
+            </tr>
+            <tr>
+              <td><strong>$(0, 1)$</strong></td>
+              <td>$2(0) + 2(1) - 3$</td>
+              <td><span class="blank"></span></td>
+              <td>( 참 / 거짓 )</td>
+              <td><strong><span class="blank"></span></strong></td>
+              <td>0 (일치)</td>
+            </tr>
+            <tr>
+              <td><strong>$(1, 1)$</strong></td>
+              <td>$2(1) + 2(1) - 3$</td>
+              <td><span class="blank"></span></td>
+              <td>( 참 / 거짓 )</td>
+              <td><strong><span class="blank"></span></strong></td>
+              <td>1 (일치)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 활동 2: 자 대고 직선 긋기 -->
+        <div class="section-title">✍️ [활동 2] 좌표평면에 직접 자를 대고 AND 결정경계 직선 긋기</div>
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:6px;">
+          <svg width="200" height="110" viewBox="0 0 200 110" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px;">
+            <defs>
+              <pattern id="grid3" width="22" height="22" patternUnits="userSpaceOnUse">
+                <path d="M 22 0 L 0 0 0 22" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="200" height="110" fill="url(#grid3)" />
+            <line x1="25" y1="90" x2="185" y2="90" stroke="#64748b" stroke-width="2"/>
+            <line x1="25" y1="90" x2="25" y2="10" stroke="#64748b" stroke-width="2"/>
+            <text x="185" y="100" font-size="9" font-weight="bold">x1</text>
+            <text x="14" y="15" font-size="9" font-weight="bold">x2</text>
+            <circle cx="25" cy="90" r="5" fill="#94a3b8" stroke="#1e293b" stroke-width="1.5"/><text x="32" y="85" font-size="7.5">(0,0)</text>
+            <circle cx="70" cy="90" r="5" fill="#94a3b8" stroke="#1e293b" stroke-width="1.5"/><text x="77" y="85" font-size="7.5">(1,0)</text>
+            <circle cx="25" cy="45" r="5" fill="#94a3b8" stroke="#1e293b" stroke-width="1.5"/><text x="32" y="40" font-size="7.5">(0,1)</text>
+            <circle cx="70" cy="45" r="5" fill="#94a3b8" stroke="#1e293b" stroke-width="1.5"/><text x="77" y="40" font-size="7.5">(1,1)</text>
+            <circle cx="115" cy="90" r="3" fill="#cbd5e1"/>
+            <circle cx="25" cy="22" r="3" fill="#cbd5e1"/>
+          </svg>
+          <div style="flex:1; font-size:11px;">
+            <strong>📏 자 대고 직선 긋기 미션</strong>: <br>
+            • $x_1$ 절편 $(1.5, 0)$과 $x_2$ 절편 $(0, 1.5)$를 찾아 자로 연결하세요! <br>
+            • 직선 위 $(1,1)$은 <strong>빨간색(1)</strong>, 아래 3개 점은 <strong>파란색(0)</strong>으로 색칠하세요.
+          </div>
+        </div>
+
+        <!-- 활동 3: XOR을 OR과 NAND로 최종 도출 -->
+        <div class="section-title">🌟 [활동 3] XOR 연산을 OR과 NAND로 최종 도출하는 수학적 과정</div>
+        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px; font-size:11px;">
+          <div style="font-weight:bold; color:#1e3a8a; margin-bottom:4px;">
+            수학적 동치 관계: $x_1 \oplus x_2 \equiv (x_1 \lor x_2) \land \sim(x_1 \land x_2) \equiv \mathbf{OR(x_1, x_2) \land NAND(x_1, x_2)}$
+          </div>
+          <p style="margin:2px 0 4px 0;">아래 표의 빈칸을 채워, 1층(은닉층)과 2층(출력층)을 거치며 XOR이 완벽히 도출되는 과정을 확인하세요!</p>
+
+          <table class="content-table" style="margin:3px 0;">
+            <thead>
+              <tr>
+                <th width="15%">입력 $(x_1, x_2)$</th>
+                <th width="20%">1단계: $s_1 = \text{NAND}$<br>(1,1 제외)</th>
+                <th width="20%">1단계: $s_2 = \text{OR}$<br>(0,0 제외)</th>
+                <th width="25%">2단계: $y = \text{AND}(s_1, s_2)$<br>(두 신호의 교집합)</th>
+                <th width="20%">최종 XOR 목표값</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$(0, 0)$</strong></td>
+                <td>1</td>
+                <td>0</td>
+                <td>$\text{AND}(1, 0) =$ <strong>0</strong></td>
+                <td><strong>0</strong> (일치!)</td>
+              </tr>
+              <tr>
+                <td><strong>$(1, 0)$</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>$\text{AND}(1, 1) =$ <strong>[ &nbsp; ]</strong></td>
+                <td><strong>1</strong> (일치!)</td>
+              </tr>
+              <tr>
+                <td><strong>$(0, 1)$</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>$\text{AND}(1, 1) =$ <strong>[ &nbsp; ]</strong></td>
+                <td><strong>1</strong> (일치!)</td>
+              </tr>
+              <tr>
+                <td><strong>$(1, 1)$</strong></td>
+                <td>0</td>
+                <td>1</td>
+                <td>$\text{AND}(0, 1) =$ <strong>[ &nbsp; ]</strong></td>
+                <td><strong>0</strong> (일치!)</td>
+              </tr>
+            </tbody>
+          </table>
+          👉 <strong>수학적 의미</strong>: 단일 직선으로는 불가능했던 XOR을 <strong>'NAND 직선과 OR 직선 사이의 교집합($\cap$)'</strong>으로 완벽히 해결했습니다! (다층 퍼셉트론 / 딥러닝의 원리)
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>고등학교 1학년 아카데미아 수학-정보 융합 탐구</span>
+        <span>Page 3 (3차시)</span>
+      </div>
+    </div>
+
+
+    <!-- ======================================================================
+         PAGE 4: [최종 산출물] 다양한 진로 예시가 포함된 1페이지 탐구 보고서
+         ====================================================================== -->
+    <div class="page" id="page4">
+      <div>
+        <div class="page-header">
+          <div class="header-top">
+            <span class="badge" style="background:#dcfce7; color:#15803d;">4차시 최종 산출물</span>
+            <span class="page-num">Page 4 / 4</span>
+          </div>
+          <h1 class="main-title">수학-AI 융합 1페이지 개별 탐구 보고서</h1>
+          <table class="info-table">
+            <tr>
+              <th width="14%">학번 / 성명</th>
+              <td width="36%">1학년 &nbsp;&nbsp;&nbsp;반 &nbsp;&nbsp;&nbsp;번 &nbsp;&nbsp;이름:</td>
+              <th width="14%">희망 진로</th>
+              <td width="36%"></td>
+            </tr>
+            <tr>
+              <th>탐구 주제</th>
+              <td colspan="3" style="text-align:left; font-weight:bold; color:#1e3a8a;">
+                [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 진로 가이드 박스 -->
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:4px 8px; font-size:10.5px; margin-bottom:5px;">
+          <strong>🎯 나의 진로 분야 선택 예시 (택1)</strong> : 
+          ① <strong>AI/소프트웨어</strong> (다층 퍼셉트론과 비선형 분류) &nbsp;|&nbsp;
+          ② <strong>반도체/전자공학</strong> (NAND 만능성과 0~32 덧셈 회로) &nbsp;|&nbsp;
+          ③ <strong>의약학/생명</strong> (진단 키트 위양성/위음성과 필요충분조건) &nbsp;|&nbsp;
+          ④ <strong>경영/빅데이터</strong> (추천 알고리즘 타겟팅과 교집합/차집합) &nbsp;|&nbsp;
+          ⑤ <strong>로봇/자율주행</strong> (센서 장애물 판단과 결정경계 부등식) &nbsp;|&nbsp;
+          ⑥ <strong>정보보안/암호</strong> (XOR 대칭키 암호화 복원)
+        </div>
+
+        <!-- 1. 탐구 동기 -->
+        <div class="section-title">1. 탐구 동기 및 진로 연계성 (3~4줄)</div>
+        <div class="write-box" style="min-height:50px;">
+          ※ 나의 진로 희망과 '집합과 명제', 인공지능 퍼셉트론/논리 회로를 연결하여 선정한 이유를 서술하세요. <br><br>
+        </div>
+
+        <!-- 2. 핵심 수학적 원리 -->
+        <div class="section-title">2. 핵심 수학적 개념 및 원리 (4~5줄)</div>
+        <div class="write-box" style="min-height:55px;">
+          ※ 진리집합 포함관계($P \subseteq Q$), 필요·충분조건, 드모르간 법칙, 1차 부등식 영역, XOR 분해식($\text{OR} \land \text{NAND}$) 중 본인 주제의 수식을 명확히 적으세요. <br><br>
+        </div>
+
+        <!-- 3. 실습 및 분석 내용 -->
+        <div class="section-title">3. 실습 및 분석 내용 (손계산 및 슬라이더 결과 기록)</div>
+        <table class="content-table" style="margin:3px 0;">
+          <thead>
+            <tr>
+              <th width="20%">분류 게이트</th>
+              <th width="15%">가중치 $w_1$</th>
+              <th width="15%">가중치 $w_2$</th>
+              <th width="15%">편향 $b$</th>
+              <th width="35%">직선의 방정식 & 분류 성공 여부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>AND 게이트</strong></td>
+              <td>2.0</td>
+              <td>2.0</td>
+              <td>-3.0</td>
+              <td>$2x_1 + 2x_2 - 3 = 0$ (성공 4/4)</td>
+            </tr>
+            <tr>
+              <td><strong>OR 게이트</strong></td>
+              <td>2.0</td>
+              <td>2.0</td>
+              <td>-1.0</td>
+              <td>$2x_1 + 2x_2 - 1 = 0$ (성공 4/4)</td>
+            </tr>
+            <tr>
+              <td><strong>NAND 게이트</strong></td>
+              <td>-2.0</td>
+              <td>-2.0</td>
+              <td>+3.0</td>
+              <td>$-2x_1 - 2x_2 + 3 = 0$ (성공 4/4)</td>
+            </tr>
+            <tr>
+              <td><strong>내가 탐구한 게이트</strong></td>
+              <td><span class="blank"></span></td>
+              <td><span class="blank"></span></td>
+              <td><span class="blank"></span></td>
+              <td><span class="blank-lg"></span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="write-box" style="min-height:45px; margin-top:3px;">
+          ※ 결과 해석: 단층 퍼셉트론의 XOR 한계와 다층 퍼셉트론(직선 2개의 교집합 $\text{OR} \land \text{NAND}$) 해결 원리를 서술하세요. <br><br>
+        </div>
+
+        <!-- 4. 결론 및 후속 탐구 계획 -->
+        <div class="section-title">4. 결론 및 후속 탐구 계획 (배운 점과 성장)</div>
+        <div class="write-box" style="min-height:48px;">
+          ※ 이번 탐구를 통해 느낀 점과 2학년 선택과목(인공지능 수학, 정보, 미적분 등)과 연계한 발전 계획을 서술하세요. <br><br>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span>고등학교 1학년 아카데미아 수학-정보 융합 탐구</span>
+        <span>Page 4 (최종 산출물 완결)</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  
+  <!-- ==========================================================================
+       [인터랙티브 모달] 탭 1: 정밀 회로 NAND / 탭 2: 0~32 2진수 연산기 & 가산기
+       ========================================================================== -->
+  <div id="nand-modal" class="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeNandModal()" title="닫기">✕</button>
+      
+      <!-- 상단 탭 헤더 -->
+      <div class="tab-header">
+        <button id="tab-btn-nand" class="main-tab-btn active" onclick="switchMainTab('NAND')">
+          ⚡ [탭 1] NAND 만능 게이트 정밀 회로
+        </button>
+        <button id="tab-btn-counter" class="main-tab-btn" onclick="switchMainTab('COUNTER')">
+          🔢 [탭 2] 0~32 2진수 연산기 & 가산기 회로
+        </button>
+      </div>
+
+      <!-- ==================================================================
+           [탭 1 콘텐츠] NAND 만능 게이트 정밀 회로 (SVG 정밀 배선)
+           ================================================================== -->
+      <div id="tab-content-nand">
+        <!-- 모드 선택 버튼들 -->
+        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:12px; flex-wrap:wrap;">
+          <button id="btn-mode-not" class="sim-mode-btn active" onclick="setNandMode('NOT')">[NOT] 게이트 (NAND 1개)</button>
+          <button id="btn-mode-and" class="sim-mode-btn" onclick="setNandMode('AND')">[AND] 게이트 (NAND 2개)</button>
+          <button id="btn-mode-or" class="sim-mode-btn" onclick="setNandMode('OR')">[OR] 게이트 (NAND 3개)</button>
+          <button id="btn-mode-xor" class="sim-mode-btn" onclick="setNandMode('XOR')">[XOR] 게이트 (NAND 4개)</button>
+        </div>
+
+        <!-- 입력/출력 컨트롤러 -->
+        <div style="background:#020617; border:1px solid #1e293b; border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11.5px; font-weight:bold; color:#94a3b8;">입력 A (클릭토글):</span>
+              <button id="sim-btn-a" class="sim-input-btn" onclick="toggleSimInput('A')">0</button>
+            </div>
+            <div id="sim-container-b" style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11.5px; font-weight:bold; color:#94a3b8;">입력 B (클릭토글):</span>
+              <button id="sim-btn-b" class="sim-input-btn" onclick="toggleSimInput('B')">0</button>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; border-left:1px solid #1e293b; padding-left:14px;">
+            <span style="font-size:11.5px; font-weight:bold; color:#94a3b8;">최종 출력:</span>
+            <div id="sim-output-badge" style="width:40px; height:40px; border-radius:8px; background:#0f172a; color:#38bdf8; font-size:18px; font-weight:bold; font-family:monospace; display:flex; align-items:center; justify-content:center; border:2px solid #38bdf8;">
+              1
+            </div>
+          </div>
+        </div>
+
+        <!-- 정밀 SVG 회로 캔버스 -->
+        <div style="background:#020617; border:1px solid #1e293b; border-radius:10px; padding:10px; min-height:160px; display:flex; justify-content:center; align-items:center; overflow-x:auto; margin-bottom:12px;">
+          <svg id="nand-circuit-svg" width="680" height="150" viewBox="0 0 680 150" style="background:#020617;"></svg>
+        </div>
+
+        <!-- 하단 설명 및 진리표 -->
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:12px;">
+          <div style="background:#020617; border:1px solid #1e293b; border-radius:8px; padding:10px; font-size:11px;">
+            <div style="color:#38bdf8; font-weight:bold; margin-bottom:3px;">📌 수학적 동작 원리</div>
+            <div id="sim-explanation" style="color:#cbd5e1; line-height:1.45;"></div>
+          </div>
+          <div style="background:#020617; border:1px solid #1e293b; border-radius:8px; padding:10px;">
+            <div style="color:#94a3b8; font-size:10.5px; font-weight:bold; margin-bottom:4px; text-align:center;">진리표 (Truth Table)</div>
+            <div id="sim-truth-table" style="font-size:10.5px; font-family:monospace;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================================================================
+           [탭 2 콘텐츠] 0~32 2진수 연산기 & 가산기 회로 시뮬레이터
+           ================================================================== -->
+      <div id="tab-content-counter" style="display:none;">
+        <!-- 상단 십진수 디스플레이 및 제어 버튼 -->
+        <div style="background:#020617; border:1px solid #1e293b; border-radius:12px; padding:14px 18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span style="font-size:11px; color:#94a3b8; font-weight:bold;">10진수 숫자 출력</span>
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <span id="display-decimal" style="font-size:36px; font-weight:800; font-family:monospace; color:#38bdf8; text-shadow:0 0 15px rgba(56,189,248,0.5);">
+                0
+              </span>
+              <span id="display-range" style="font-size:13px; color:#64748b; font-weight:bold;">/ 32 (범위: 0 ~ 32)</span>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="calc-btn" onclick="stepCounter(-1)">-1 감소</button>
+            <button class="calc-btn" onclick="stepCounter(1)">+1 증가</button>
+            <button id="auto-btn" class="calc-btn" style="background:#0284c7; color:white;" onclick="toggleAutoCount()">▶ 0~32 자동 카운트</button>
+            <button class="calc-btn" onclick="resetCounter()">리셋 (0)</button>
+          </div>
+        </div>
+
+        <!-- 6비트 스위치 컨트롤러 ($2^5 \sim 2^0$) -->
+        <div style="background:#020617; border:1px solid #1e293b; border-radius:12px; padding:12px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:bold; color:#94a3b8;">
+              🎛 6비트 2진수 스위치 (각 비트를 직접 클릭해서 0과 1을 켜보세요!)
+            </span>
+            <span style="font-size:11px; font-mono; color:#38bdf8;" id="binary-string-view">
+              2진수: 000000(2)
+            </span>
+          </div>
+
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <!-- 비트 5 (32) -->
+            <div id="bit-5" class="bit-btn" onclick="toggleBit(5)">
+              <span class="val">0</span>
+              <span class="label">2⁵(32)</span>
+            </div>
+            <!-- 비트 4 (16) -->
+            <div id="bit-4" class="bit-btn" onclick="toggleBit(4)">
+              <span class="val">0</span>
+              <span class="label">2⁴(16)</span>
+            </div>
+            <!-- 비트 3 (8) -->
+            <div id="bit-3" class="bit-btn" onclick="toggleBit(3)">
+              <span class="val">0</span>
+              <span class="label">2³(8)</span>
+            </div>
+            <!-- 비트 2 (4) -->
+            <div id="bit-2" class="bit-btn" onclick="toggleBit(2)">
+              <span class="val">0</span>
+              <span class="label">2²(4)</span>
+            </div>
+            <!-- 비트 1 (2) -->
+            <div id="bit-1" class="bit-btn" onclick="toggleBit(1)">
+              <span class="val">0</span>
+              <span class="label">2¹(2)</span>
+            </div>
+            <!-- 비트 0 (1) -->
+            <div id="bit-0" class="bit-btn" onclick="toggleBit(0)">
+              <span class="val">0</span>
+              <span class="label">2⁰(1)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2진수 가산기 연산 원리 SVG 다이어그램 -->
+        <div style="background:#020617; border:1px solid #1e293b; border-radius:10px; padding:10px; margin-bottom:10px;">
+          <div style="font-size:11px; color:#38bdf8; font-weight:bold; margin-bottom:6px;">
+            ⚡ 컴퓨터 연산기(ALU) 핵심: 반가산기(Half Adder) 덧셈 회로 시뮬레이션
+          </div>
+          <svg id="adder-circuit-svg" width="680" height="95" viewBox="0 0 680 95" style="background:#020617;"></svg>
+        </div>
+
+        <div style="background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:8px 12px; font-size:11px; color:#94a3b8; line-height:1.45;">
+          💡 <strong>연산기 원리</strong> : 
+          10진수 $32$는 2진수로 <strong>100000₂</strong> (스위치 6번째만 ON)입니다. 
+          스위치 5개($16+8+4+2+1$)로 $0 \sim 31$을 표현하고, 여기에 $+1$을 더하면 
+          <strong>가산기 회로의 올림수(Carry)</strong>가 도미노처럼 연속 전달되어 6번째 비트가 1이 되면서 $32$가 출력됩니다!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // 모달 및 탭 전환
+    // -------------------------------------------------------------
+    function openNandModal() {
+      document.getElementById('nand-modal').classList.add('active');
+      renderNandSvg();
+      updateCounterUI();
+    }
+    function closeNandModal() {
+      document.getElementById('nand-modal').classList.remove('active');
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        document.getElementById('auto-btn').textContent = '▶ 0~32 자동 카운트';
+      }
+    }
+    function handleOverlayClick(e) {
+      if (e.target.id === 'nand-modal') closeNandModal();
+    }
+
+    function switchMainTab(tab) {
+      const btnNand = document.getElementById('tab-btn-nand');
+      const btnCounter = document.getElementById('tab-btn-counter');
+      const contentNand = document.getElementById('tab-content-nand');
+      const contentCounter = document.getElementById('tab-content-counter');
+
+      if (tab === 'NAND') {
+        btnNand.className = 'main-tab-btn active';
+        btnCounter.className = 'main-tab-btn';
+        contentNand.style.display = 'block';
+        contentCounter.style.display = 'none';
+        renderNandSvg();
+      } else {
+        btnNand.className = 'main-tab-btn';
+        btnCounter.className = 'main-tab-btn active';
+        contentNand.style.display = 'none';
+        contentCounter.style.display = 'block';
+        updateCounterUI();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // [탭 1] 정밀 회로 NAND 시뮬레이터 로직
+    // -------------------------------------------------------------
+    let simMode = 'NOT';
+    let simA = 0;
+    let simB = 0;
+
+    function setNandMode(mode) {
+      simMode = mode;
+      ['not', 'and', 'or', 'xor'].forEach(m => {
+        const btn = document.getElementById('btn-mode-' + m);
+        btn.className = (m === mode.toLowerCase()) ? 'sim-mode-btn active' : 'sim-mode-btn';
+      });
+      document.getElementById('sim-container-b').style.display = (mode === 'NOT') ? 'none' : 'flex';
+      renderNandSvg();
+    }
+
+    function toggleSimInput(which) {
+      if (which === 'A') simA = (simA === 0) ? 1 : 0;
+      if (which === 'B') simB = (simB === 0) ? 1 : 0;
+      renderNandSvg();
+    }
+
+    // SVG 게이트 심볼 생성 헬퍼
+    function svgNandGate(x, y, label, outVal) {
+      const color = outVal ? '#38bdf8' : '#64748b';
+      const fill = outVal ? '#0c4a6e' : '#1e293b';
+      return `
+        <g transform="translate(${x}, ${y})">
+          <!-- 게이트 본체 D 형태 -->
+          <path d="M 0,0 L 28,0 A 20,20 0 0,1 28,40 L 0,40 Z" fill="${fill}" stroke="${color}" stroke-width="2"/>
+          <!-- 반전 버블 -->
+          <circle cx="53" cy="20" r="5" fill="#090d16" stroke="${color}" stroke-width="2"/>
+          <text x="18" y="24" font-size="10" font-weight="bold" fill="${color}" text-anchor="middle">${label}</text>
+        </g>
+      `;
+    }
+
+    function renderNandSvg() {
+      document.getElementById('sim-btn-a').textContent = simA;
+      document.getElementById('sim-btn-a').className = 'sim-input-btn ' + (simA ? 'on' : '');
+      document.getElementById('sim-btn-b').textContent = simB;
+      document.getElementById('sim-btn-b').className = 'sim-input-btn ' + (simB ? 'on' : '');
+
+      const svg = document.getElementById('nand-circuit-svg');
+      const exp = document.getElementById('sim-explanation');
+      const table = document.getElementById('sim-truth-table');
+      const badge = document.getElementById('sim-output-badge');
+
+      const colA = simA ? '#38bdf8' : '#334155';
+      const colB = simB ? '#38bdf8' : '#334155';
+
+      let out = 0;
+
+      if (simMode === 'NOT') {
+        out = !(simA && simA) ? 1 : 0;
+        const colOut = out ? '#38bdf8' : '#334155';
+
+        svg.innerHTML = `
+          <!-- 입력 A 라벨 및 핀 -->
+          <text x="30" y="78" font-size="12" font-weight="bold" fill="${colA}">A = ${simA}</text>
+          <!-- 분기선: A에서 위아래 핀으로 정확히 배선 -->
+          <line x1="80" y1="75" x2="140" y2="75" stroke="${colA}" stroke-width="3"/>
+          <circle cx="140" cy="75" r="4" fill="${colA}"/>
+          <path d="M 140,75 L 140,65 L 200,65" fill="none" stroke="${colA}" stroke-width="3"/>
+          <path d="M 140,75 L 140,85 L 200,85" fill="none" stroke="${colA}" stroke-width="3"/>
+          
+          <!-- NAND 1 게이트 -->
+          ${svgNandGate(200, 55, "NAND", out)}
+
+          <!-- 출력선 -->
+          <line x1="258" y1="75" x2="380" y2="75" stroke="${colOut}" stroke-width="3"/>
+          <circle cx="380" cy="75" r="6" fill="${colOut}"/>
+          <text x="400" y="79" font-size="13" font-weight="bold" fill="${colOut}">출력 NOT(A) = ${out}</text>
+        `;
+        exp.innerHTML = `
+          • <strong>수학적 원리</strong>: $\text{NOT}(A) = \text{NAND}(A, A)$<br>
+          신호 A를 두 입력 단자에 묶어 넣으면, $A=0$일 때 $1$, $A=1$일 때 $0$이 출력되어 완벽한 NOT이 완성됩니다!
+        `;
+        renderTruthTableRows([{a:0, b:0, out:1}, {a:1, b:1, out:0}], true);
+
+      } else if (simMode === 'AND') {
+        const n1 = !(simA && simB) ? 1 : 0;
+        out = !(n1 && n1) ? 1 : 0;
+        const colN1 = n1 ? '#38bdf8' : '#334155';
+        const colOut = out ? '#38bdf8' : '#334155';
+
+        svg.innerHTML = `
+          <text x="25" y="60" font-size="11" font-weight="bold" fill="${colA}">A = ${simA}</text>
+          <text x="25" y="95" font-size="11" font-weight="bold" fill="${colB}">B = ${simB}</text>
+          <line x1="75" y1="56" x2="160" y2="56" stroke="${colA}" stroke-width="3"/>
+          <line x1="75" y1="92" x2="160" y2="92" stroke="${colB}" stroke-width="3"/>
+          
+          <!-- 1단계: NAND 1 -->
+          ${svgNandGate(160, 48, "NAND1", n1)}
+
+          <!-- 분기선: NAND1 출력이 둘로 나뉘어 NAND2로 들어감 -->
+          <line x1="218" y1="68" x2="270" y2="68" stroke="${colN1}" stroke-width="3"/>
+          <circle cx="270" cy="68" r="4" fill="${colN1}"/>
+          <path d="M 270,68 L 270,58 L 330,58" fill="none" stroke="${colN1}" stroke-width="3"/>
+          <path d="M 270,68 L 270,78 L 330,78" fill="none" stroke="${colN1}" stroke-width="3"/>
+
+          <!-- 2단계: NAND 2 (NOT 역할) -->
+          ${svgNandGate(330, 48, "NAND2", out)}
+
+          <line x1="388" y1="68" x2="480" y2="68" stroke="${colOut}" stroke-width="3"/>
+          <circle cx="480" cy="68" r="6" fill="${colOut}"/>
+          <text x="495" y="72" font-size="12" font-weight="bold" fill="${colOut}">A AND B = ${out}</text>
+        `;
+        exp.innerHTML = `
+          • <strong>수학적 원리</strong>: $\text{AND}(A, B) = \text{NOT}(\text{NAND}(A, B))$<br>
+          1단계 NAND 게이트의 결과를 다시 2단계 NAND(NOT)로 뒤집어 정직한 AND 출력을 만듭니다!
+        `;
+        renderTruthTableRows([
+          {a:0, b:0, out:0}, {a:0, b:1, out:0}, {a:1, b:0, out:0}, {a:1, b:1, out:1}
+        ]);
+
+      } else if (simMode === 'OR') {
+        const nA = !(simA && simA) ? 1 : 0;
+        const nB = !(simB && simB) ? 1 : 0;
+        out = !(nA && nB) ? 1 : 0;
+        const colNA = nA ? '#38bdf8' : '#334155';
+        const colNB = nB ? '#38bdf8' : '#334155';
+        const colOut = out ? '#38bdf8' : '#334155';
+
+        svg.innerHTML = `
+          <!-- A 입력 및 NAND1(NOT) -->
+          <text x="20" y="38" font-size="11" font-weight="bold" fill="${colA}">A = ${simA}</text>
+          <path d="M 70,35 L 100,35 L 100,26 L 140,26" fill="none" stroke="${colA}" stroke-width="3"/>
+          <path d="M 100,35 L 100,44 L 140,44" fill="none" stroke="${colA}" stroke-width="3"/>
+          <circle cx="100" cy="35" r="4" fill="${colA}"/>
+          ${svgNandGate(140, 15, "NOT A", nA)}
+
+          <!-- B 입력 및 NAND2(NOT) -->
+          <text x="20" y="118" font-size="11" font-weight="bold" fill="${colB}">B = ${simB}</text>
+          <path d="M 70,115 L 100,115 L 100,106 L 140,106" fill="none" stroke="${colB}" stroke-width="3"/>
+          <path d="M 100,115 L 100,124 L 140,124" fill="none" stroke="${colB}" stroke-width="3"/>
+          <circle cx="100" cy="115" r="4" fill="${colB}"/>
+          ${svgNandGate(140, 95, "NOT B", nB)}
+
+          <!-- 두 출력이 NAND3로 정확히 배선 -->
+          <path d="M 198,35 L 260,35 L 260,65 L 310,65" fill="none" stroke="${colNA}" stroke-width="3"/>
+          <path d="M 198,115 L 260,115 L 260,85 L 310,85" fill="none" stroke="${colNB}" stroke-width="3"/>
+
+          ${svgNandGate(310, 55, "NAND3", out)}
+
+          <line x1="368" y1="75" x2="470" y2="75" stroke="${colOut}" stroke-width="3"/>
+          <circle cx="470" cy="75" r="6" fill="${colOut}"/>
+          <text x="485" y="79" font-size="12" font-weight="bold" fill="${colOut}">A OR B = ${out}</text>
+        `;
+        exp.innerHTML = `
+          • <strong>드모르간 법칙의 응용</strong>: $A + B = \overline{\bar{A} \cdot \bar{B}} = \text{NAND}(\text{NOT}(A), \text{NOT}(B))$<br>
+          각 입력을 반전시켜 세 번째 NAND에 넣으면 마법처럼 합집합(OR)이 됩니다!
+        `;
+        renderTruthTableRows([
+          {a:0, b:0, out:0}, {a:0, b:1, out:1}, {a:1, b:0, out:1}, {a:1, b:1, out:1}
+        ]);
+
+      } else if (simMode === 'XOR') {
+        const n1 = !(simA && simB) ? 1 : 0;
+        const n2 = !(simA && n1) ? 1 : 0;
+        const n3 = !(simB && n1) ? 1 : 0;
+        out = !(n2 && n3) ? 1 : 0;
+        const colN1 = n1 ? '#38bdf8' : '#334155';
+        const colN2 = n2 ? '#38bdf8' : '#334155';
+        const colN3 = n3 ? '#38bdf8' : '#334155';
+        const colOut = out ? '#38bdf8' : '#334155';
+
+        svg.innerHTML = `
+          <text x="15" y="45" font-size="11" font-weight="bold" fill="${colA}">A = ${simA}</text>
+          <text x="15" y="110" font-size="11" font-weight="bold" fill="${colB}">B = ${simB}</text>
+
+          <!-- A선과 B선의 교차 및 NAND1으로의 배선 -->
+          <path d="M 65,42 L 100,42 L 100,68 L 135,68" fill="none" stroke="${colA}" stroke-width="2.5"/>
+          <path d="M 65,108 L 100,108 L 100,86 L 135,86" fill="none" stroke="${colB}" stroke-width="2.5"/>
+          <circle cx="100" cy="42" r="3.5" fill="${colA}"/>
+          <circle cx="100" cy="108" r="3.5" fill="${colB}"/>
+
+          <!-- A는 NAND2로 직행 -->
+          <path d="M 100,42 L 250,42 L 250,30 L 280,30" fill="none" stroke="${colA}" stroke-width="2.5"/>
+          <!-- B는 NAND3로 직행 -->
+          <path d="M 100,108 L 250,108 L 250,120 L 280,120" fill="none" stroke="${colB}" stroke-width="2.5"/>
+
+          <!-- NAND 1 -->
+          ${svgNandGate(135, 57, "N1", n1)}
+
+          <!-- N1 출력이 분기하여 NAND2와 NAND3으로 연결 -->
+          <path d="M 193,77 L 225,77 L 225,46 L 280,46" fill="none" stroke="${colN1}" stroke-width="2.5"/>
+          <path d="M 225,77 L 225,104 L 280,104" fill="none" stroke="${colN1}" stroke-width="2.5"/>
+          <circle cx="225" cy="77" r="3.5" fill="${colN1}"/>
+
+          <!-- NAND 2 & NAND 3 -->
+          ${svgNandGate(280, 18, "N2", n2)}
+          ${svgNandGate(280, 92, "N3", n3)}
+
+          <!-- N2, N3 출력이 NAND 4로 집결 -->
+          <path d="M 338,38 L 400,38 L 400,68 L 435,68" fill="none" stroke="${colN2}" stroke-width="2.5"/>
+          <path d="M 338,112 L 400,112 L 400,86 L 435,86" fill="none" stroke="${colN3}" stroke-width="2.5"/>
+
+          <!-- NAND 4 -->
+          ${svgNandGate(435, 57, "N4", out)}
+
+          <line x1="493" y1="77" x2="570" y2="77" stroke="${colOut}" stroke-width="3"/>
+          <circle cx="570" cy="77" r="6" fill="${colOut}"/>
+          <text x="585" y="81" font-size="12" font-weight="bold" fill="${colOut}">A XOR B = ${out}</text>
+        `;
+        exp.innerHTML = `
+          • <strong>XOR의 NAND 4개 완성</strong>: 단층 퍼셉트론으로 불가능했던 XOR을 단 4개의 NAND 게이트로 배선하여 완벽히 해결합니다!<br>
+          두 신호가 서로 다를 때만 $1$이 출력되는 가산기 덧셈의 핵심입니다.
+        `;
+        renderTruthTableRows([
+          {a:0, b:0, out:0}, {a:0, b:1, out:1}, {a:1, b:0, out:1}, {a:1, b:1, out:0}
+        ]);
+      }
+
+      badge.textContent = out;
+      badge.style.borderColor = out ? '#38bdf8' : '#475569';
+      badge.style.color = out ? '#38bdf8' : '#ef4444';
+      badge.style.boxShadow = out ? '0 0 12px rgba(56, 189, 248, 0.4)' : 'none';
+    }
+
+    function renderTruthTableRows(rows, isSingle=false) {
+      const table = document.getElementById('sim-truth-table');
+      if (isSingle) {
+        table.innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid #334155; padding-bottom:2px; color:#64748b; text-align:center;">
+            <span>A</span><span>OUT</span>
+          </div>
+          ${rows.map(r => `
+            <div style="display:grid; grid-template-columns:1fr 1fr; text-align:center; padding:2px 0; ${r.a===simA ? 'background:#0c4a6e; color:#7dd3fc; font-weight:bold;' : 'color:#94a3b8;'}">
+              <span>${r.a}</span><span>${r.out}</span>
+            </div>
+          `).join('')}
+        `;
+      } else {
+        table.innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr 1.2fr; border-bottom:1px solid #334155; padding-bottom:2px; color:#64748b; text-align:center;">
+            <span>A</span><span>B</span><span>OUT</span>
+          </div>
+          ${rows.map(r => {
+            const act = (r.a === simA && r.b === simB);
+            return `
+              <div style="display:grid; grid-template-columns:1fr 1fr 1.2fr; text-align:center; padding:2px 0; border-radius:3px; ${act ? 'background:#0c4a6e; color:#7dd3fc; font-weight:bold; border:1px solid #0284c7;' : 'color:#94a3b8;'}">
+                <span>${r.a}</span><span>${r.b}</span><span>${r.out}</span>
+              </div>
+            `;
+          }).join('')}
+        `;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // [탭 2] 0~32 2진수 연산기 & 가산기 로직
+    // -------------------------------------------------------------
+    let currentNumber = 0; // 0 ~ 32
+    let autoInterval = null;
+
+    function updateCounterUI() {
+      if (currentNumber < 0) currentNumber = 0;
+      if (currentNumber > 32) currentNumber = 32;
+
+      document.getElementById('display-decimal').textContent = currentNumber;
+      const bin6 = currentNumber.toString(2).padStart(6, '0');
+      document.getElementById('binary-string-view').textContent = `2진수: ${bin6}(2)`;
+
+      for (let i = 0; i <= 5; i++) {
+        // 비트 0은 1의 자리 (bin6의 끝 인덱스 5)
+        const bitVal = parseInt(bin6[5 - i]);
+        const btn = document.getElementById('bit-' + i);
+        btn.className = 'bit-btn ' + (bitVal ? 'on' : '');
+        btn.querySelector('.val').textContent = bitVal;
+      }
+
+      renderAdderSvg();
+    }
+
+    function toggleBit(bitIndex) {
+      const bitWeight = Math.pow(2, bitIndex);
+      const bin6 = currentNumber.toString(2).padStart(6, '0');
+      const curBitVal = parseInt(bin6[5 - bitIndex]);
+
+      if (curBitVal === 0) {
+        currentNumber += bitWeight;
+      } else {
+        currentNumber -= bitWeight;
+      }
+      updateCounterUI();
+    }
+
+    function stepCounter(delta) {
+      currentNumber += delta;
+      updateCounterUI();
+    }
+
+    function resetCounter() {
+      currentNumber = 0;
+      updateCounterUI();
+    }
+
+    function toggleAutoCount() {
+      const btn = document.getElementById('auto-btn');
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        btn.textContent = '▶ 0~32 자동 카운트';
+        btn.style.background = '#0284c7';
+      } else {
+        btn.textContent = '⏸ 일시 정지';
+        btn.style.background = '#ea580c';
+        autoInterval = setInterval(() => {
+          if (currentNumber >= 32) {
+            currentNumber = 0;
+          } else {
+            currentNumber++;
+          }
+          updateCounterUI();
+        }, 600);
+      }
+    }
+
+    // 반가산기(Half Adder) SVG 회로 렌더링
+    function renderAdderSvg() {
+      const svg = document.getElementById('adder-circuit-svg');
+      // 현재 숫자의 최하위 1비트에 1을 더하는 연산 시연
+      const a = currentNumber & 1; // 입력 A
+      const b = 1;                 // 1을 더함
+      const sum = a ^ b;           // 합 XOR
+      const carry = a & b;         // 올림수 AND
+
+      const colA = a ? '#38bdf8' : '#334155';
+      const colB = '#38bdf8'; // b=1
+      const colSum = sum ? '#10b981' : '#334155';
+      const colCarry = carry ? '#f59e0b' : '#334155';
+
+      svg.innerHTML = `
+        <text x="20" y="32" font-size="10" font-weight="bold" fill="${colA}">현재 최하위비트 A = ${a}</text>
+        <text x="20" y="72" font-size="10" font-weight="bold" fill="${colB}">더할 수(+1) B = 1</text>
+
+        <!-- A, B 신호선 -->
+        <path d="M 140,28 L 190,28 L 190,20 L 230,20" fill="none" stroke="${colA}" stroke-width="2.5"/>
+        <path d="M 140,28 L 190,28 L 190,65 L 230,65" fill="none" stroke="${colA}" stroke-width="2.5"/>
+        <circle cx="190" cy="28" r="3.5" fill="${colA}"/>
+
+        <path d="M 140,68 L 205,68 L 205,32 L 230,32" fill="none" stroke="${colB}" stroke-width="2.5"/>
+        <path d="M 140,68 L 205,68 L 205,77 L 230,77" fill="none" stroke="${colB}" stroke-width="2.5"/>
+        <circle cx="205" cy="68" r="3.5" fill="${colB}"/>
+
+        <!-- XOR 게이트 (합 Sum 계산) -->
+        <g transform="translate(230, 10)">
+          <path d="M 0,0 C 10,8 10,24 0,32 C 15,32 30,22 36,16 C 30,10 15,0 0,0 Z" fill="#1e293b" stroke="${colSum}" stroke-width="2"/>
+          <path d="M -5,0 C 5,8 5,24 -5,32" fill="none" stroke="${colSum}" stroke-width="2"/>
+          <text x="16" y="20" font-size="9" fill="${colSum}" font-weight="bold">XOR</text>
+        </g>
+        <line x1="268" y1="26" x2="360" y2="26" stroke="${colSum}" stroke-width="2.5"/>
+        <circle cx="360" cy="26" r="4" fill="${colSum}"/>
+        <text x="375" y="30" font-size="11" font-weight="bold" fill="${colSum}">합(Sum) = ${sum} (결과 비트)</text>
+
+        <!-- AND 게이트 (올림수 Carry 계산) -->
+        <g transform="translate(230, 56)">
+          <path d="M 0,0 L 18,0 A 15,15 0 0,1 18,30 L 0,30 Z" fill="#1e293b" stroke="${colCarry}" stroke-width="2"/>
+          <text x="14" y="19" font-size="9" fill="${colCarry}" font-weight="bold">AND</text>
+        </g>
+        <line x1="265" y1="71" x2="360" y2="71" stroke="${colCarry}" stroke-width="2.5"/>
+        <circle cx="360" cy="71" r="4" fill="${colCarry}"/>
+        <text x="375" y="75" font-size="11" font-weight="bold" fill="${colCarry}">올림수(Carry) = ${carry} (다음 자릿수로 전달)</text>
+      `;
+    }
+  </script>
+
+</body>
+</html>
