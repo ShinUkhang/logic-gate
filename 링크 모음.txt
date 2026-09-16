@@ -1,13 +1,11 @@
-보고서 작성 양식
-
+﻿보고서 작성 양식 (구글 독스 1장 과제 사본 만들기)
 https://docs.google.com/document/d/1cA-o1wBHj-RPp2_LaSJfwkEUr-G7PAtYIu35YODMrbU/copy
 
+[도입 체험] 에니그마 & 아스키코드 암호해독기 (The Imitation Game)
+https://shinukhang.github.io/logic-gate/00_%EC%9D%B4%EB%AF%B8%ED%85%8C%EC%9D%B4%EC%85%98%EA%B2%8C%EC%9E%84_%EC%95%84%EC%8A%A4%ED%82%A4%EC%BD%94%EB%93%9C_%EC%95%94%ED%98%B8%ED%95%B4%EB%8F%85%EA%B8%B0.html
 
-교재 링크
-
+교재 링크 (4페이지 워크북 & NAND/0~32 회로 시뮬레이터)
 https://shinukhang.github.io/logic-gate/
 
-
-코드 링크
-
+코드 링크 (구글 코랩 퍼셉트론 실습)
 https://colab.research.google.com/drive/1hFwkqYsiRiEw0CtpR003gLWY1pzxsw7m/copy
