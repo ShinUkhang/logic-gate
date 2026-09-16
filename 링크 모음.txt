@@ -1,0 +1,13 @@
+보고서 작성 양식
+
+https://docs.google.com/document/d/1cA-o1wBHj-RPp2_LaSJfwkEUr-G7PAtYIu35YODMrbU/copy
+
+
+교재 링크
+
+https://shinukhang.github.io/logic-gate/
+
+
+코드 링크
+
+https://colab.research.google.com/drive/1hFwkqYsiRiEw0CtpR003gLWY1pzxsw7m/copy
